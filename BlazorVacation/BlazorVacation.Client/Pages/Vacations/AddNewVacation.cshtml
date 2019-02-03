@@ -1,0 +1,120 @@
+﻿@using System.Linq;
+
+@inject HttpClient  Http
+
+<h4 class="text-primary">Add New Vacation</h4>
+
+Total assigned vacation days for @DateTime.Today.Year: @TotalAssignedVacationDays days
+
+<br /><br />
+
+From:
+<input type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" bind="@NewVacation.FromDate" format-value="yyyy-MM-dd" />
+Till:
+<input type="date" value="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" bind="@NewVacation.TillDate" format-value="yyyy-MM-dd" />
+Duration: @CalculateDuration() days
+<br /><br />
+Note:
+<input type="text" bind="@NewVacation.Note" />
+<br /><br />
+<input type="checkbox" bind="@NewVacation.SetUpOutOfOfficeEmail" /> Set up Out of Office email
+
+<br /><br />
+
+<button onclick="@SubmitRequest" class="btn btn-primary">Submit request</button>
+
+<br /><br />
+
+@if (!string.IsNullOrWhiteSpace(@Message))
+{
+    @((MarkupString)Message);
+}
+
+
+@functions
+{
+    Vacation NewVacation = new Vacation()
+    {
+        FromDate = DateTime.Today,
+        TillDate = DateTime.Today.AddDays(1)
+    };
+
+    string Message { get; set; }
+
+    List<Holiday> Holidays;
+    int TotalAssignedVacationDays;
+
+    protected override async Task OnInitAsync()
+    {
+        Holidays = await Http.GetJsonAsync<List<Holiday>>("api/Holidays/GetHolidays");
+        TotalAssignedVacationDays = await Http.GetJsonAsync<int>("api/Vacations/GetTotalAssignedVacationDays");
+    }
+
+    int CalculateDuration()
+    {
+        if (NewVacation.TillDate >= NewVacation.FromDate)
+            return CountTotalDays() - CountNonWorkingDays(NewVacation.FromDate, NewVacation.TillDate) + 1;
+        else
+            return 0;
+
+        int CountTotalDays() => NewVacation.TillDate > NewVacation.FromDate ? (NewVacation.TillDate - NewVacation.FromDate).Days : 0;
+
+        int CountNonWorkingDays(DateTime startDate, DateTime endDate)
+        {
+            if (startDate > endDate)
+                return 0;
+
+            var countNonWorkingDays = (from x in Enumerable.Range(0, (endDate - startDate).Days + 1)
+                                       select startDate.AddDays(x) into d
+                                       where d.DayOfWeek == DayOfWeek.Saturday || d.DayOfWeek == DayOfWeek.Sunday
+                                           || (Holidays != null && Holidays.Exists(h => h.FromDate <= d && h.TillDate >= d))
+                                       select d)
+                                        .Count();
+
+            return countNonWorkingDays;
+        }
+    }
+
+    private (bool isValid, string message) Validate()
+    {
+        string errorMessage;
+
+        if (NewVacation.TillDate < NewVacation.FromDate)
+        {
+            errorMessage = @"<div class=""alert alert-danger"">
+                                <strong>Till date</strong> must be equal or greater than <strong>from date</strong>.
+                             </div>";
+
+            return (false, errorMessage);
+        }
+
+        if (NewVacation.TillDate >= NewVacation.FromDate && NewVacation.Duration == 0)
+        {
+            errorMessage = @"<div class=""alert alert-danger"">
+                                Vacation should last at least one day. <em>Weekends and holidays are not counted as vacation days</em>.
+                             </div>";
+
+            return (false, errorMessage);
+        }
+
+        return (true, null);
+    }
+
+    async Task SubmitRequest()
+    {
+        NewVacation.Duration = CalculateDuration();
+
+        var (validVacation, message) = Validate();
+        if (!validVacation)
+        {
+            Message = message;
+            return;
+        }
+
+        await Http.SendJsonAsync(HttpMethod.Put, "api/Vacations/AddNewVacation", NewVacation);
+
+        Message = @"<div class=""alert alert-success"">
+                        Vacation request submitted.
+                    </div>";
+    }
+}

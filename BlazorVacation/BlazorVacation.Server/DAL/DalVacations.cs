@@ -50,7 +50,56 @@ namespace BlazorVacation.Server.Dal
                 return listVacation;
             }
         }
-   
+
+        public int GetTotalAssignedVacationDays(int year)
+        {
+            string cmdText = $@"SELECT EMPLOYEE.TOTAL_ASSIGNED_VACATION_DAYS
+                                FROM EMPLOYEE
+                                WHERE FIRST_NAME = '{CurrentUser.FirstName}' AND
+	                                  LAST_NAME = '{CurrentUser.LastName}';";
+
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand(cmdText, connection);
+
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+
+                int totalAssignedVacationDays = 0;
+                while (reader.Read())
+                {
+                    totalAssignedVacationDays = (int)reader["TOTAL_ASSIGNED_VACATION_DAYS"];
+                }
+
+                reader.Close();
+                connection.Close();
+
+                return totalAssignedVacationDays;
+            }
+        }
+
+        public void AddNewVacation(Vacation newVacation)
+        {
+            int approved = newVacation.Approved ? 1 : 0;
+            int setUpOutOfOfficeEmail = newVacation.SetUpOutOfOfficeEmail ? 1 : 0;
+
+            string cmdText = $@"INSERT INTO VACATION (FROM_DATE, TILL_DATE, NOTE, DURATION, APPROVED, SETUP_OUT_OF_OFFICE_EMAIL)
+                                VALUES ('{newVacation.FromDate.ToString("yyyy-MM-dd")}', '{newVacation.TillDate.ToString("yyyy-MM-dd")}', '{newVacation.Note}', {newVacation.Duration}, {approved}, {setUpOutOfOfficeEmail});
+                                INSERT INTO EMPLOYEE_VACATION (EMPLOYEE_ID, VACATION_ID)
+                                VALUES ((SELECT ID FROM EMPLOYEE WHERE EMPLOYEE.FIRST_NAME = '{CurrentUser.FirstName}' AND EMPLOYEE.LAST_NAME = '{CurrentUser.LastName}'), (SELECT MAX(ID) FROM VACATION));";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand(cmdText, connection);
+
+                int rowsInserted = sqlCommand.ExecuteNonQuery();
+
+                connection.Close();
+            }
+        }
+
         private (string FirstName, string LastName) CurrentUser = ("Marko", "Lohert");
 
         private string ConnectionString = "Data Source = (localdb)\\MSSQLLocalDb;Initial Catalog = BlazorVacation;Integrated Security=true";
