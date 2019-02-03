@@ -29,5 +29,15 @@ namespace BlazorVacation.Server.Controllers
             var dal = new DalVacations();
             dal.AddNewVacation(newVacation);
         }
+        
+        [HttpGet("[action]")]
+        public List<(Employee, Vacation)> WhoIsOnVacation(int range)
+        {
+            if (range == default)
+                range = 7;
+
+            var dal = new DalVacations();
+            return dal.GetVacationsCompanyNextDays(range);
+        }
     }
 }

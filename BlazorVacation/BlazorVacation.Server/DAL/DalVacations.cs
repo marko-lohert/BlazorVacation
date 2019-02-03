@@ -100,6 +100,57 @@ namespace BlazorVacation.Server.Dal
             }
         }
 
+        public List<(Employee, Vacation)> GetVacationsCompanyNextDays(int range)
+        {
+            List<(Employee, Vacation)> listEmployeeVacation = new List<(Employee, Vacation)>();
+
+            string cmdText = $@"SELECT VACATION.*, EMPLOYEE.*
+                                FROM VACATION
+                                INNER JOIN EMPLOYEE_VACATION ON EMPLOYEE_VACATION.VACATION_ID = VACATION.ID
+                                INNER JOIN EMPLOYEE ON EMPLOYEE.ID = EMPLOYEE_VACATION.EMPLOYEE_ID
+                                WHERE VACATION.FROM_DATE <= CAST(DATEADD(day, {range}, SYSDATETIME()) AS DATE)
+                                    AND VACATION.FROM_DATE >= CAST(SYSDATETIME() AS DATE)
+                                ORDER BY VACATION.FROM_DATE;";
+            
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand(cmdText, connection);
+
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    listEmployeeVacation.Add
+                    (
+                        (
+                            new Employee
+                            {
+                                FirstName = reader["FIRST_NAME"] as string,
+                                LastName = reader["LAST_NAME"] as string,
+                                TotalAssignedVacationDays = (int)reader["TOTAL_ASSIGNED_VACATION_DAYS"]
+                            }
+                            ,
+                            new Vacation
+                            {
+                                FromDate = (DateTime)reader["FROM_DATE"],
+                                TillDate = (DateTime)reader["TILL_DATE"],
+                                Duration = (int)reader["DURATION"],
+                                Note = !reader.IsDBNull(3) ? reader["NOTE"] as string : null,
+                                Approved = (bool)reader["APPROVED"],
+                                SetUpOutOfOfficeEmail = !reader.IsDBNull(5) ? (bool)reader["SETUP_OUT_OF_OFFICE_EMAIL"] : false
+                            }
+                        )
+                    );
+                }
+
+                reader.Close();
+                connection.Close();
+
+                return listEmployeeVacation;
+            }
+        }
+        
         private (string FirstName, string LastName) CurrentUser = ("Marko", "Lohert");
 
         private string ConnectionString = "Data Source = (localdb)\\MSSQLLocalDb;Initial Catalog = BlazorVacation;Integrated Security=true";
