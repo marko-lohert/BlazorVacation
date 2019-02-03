@@ -1,4 +1,5 @@
 ﻿@using System.Linq;
+@using AnotherBlazorLibrary;
 
 @inject HttpClient  Http
 
@@ -102,6 +103,17 @@ Note:
 
     async Task SubmitRequest()
     {
+        if (string.IsNullOrEmpty(NewVacation.Note))
+        {
+            string note = await ExampleJsInterop.Prompt("It's recommended to write a note. You can write it here.");
+
+            if (!string.IsNullOrEmpty(note))
+            {
+                NewVacation.Note = note;
+                return;
+            }
+        }
+
         NewVacation.Duration = CalculateDuration();
 
         var (validVacation, message) = Validate();

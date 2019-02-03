@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AnotherBlazorLibrary\AnotherBlazorLibrary.csproj" />
     <ProjectReference Include="..\BlazorVacation.Shared\BlazorVacation.Shared.csproj" />
   </ItemGroup>
 
