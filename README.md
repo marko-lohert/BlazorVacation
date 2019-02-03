@@ -1,6 +1,8 @@
 # BlazorVacation
 A demo application I have used in a number of talks (conference, meetups).
 
+This demo contains a Blazor applications that runs on WebAssembly on the client-side, and a ASP.NET Core application on the server side.
+
 
 ## Blazor features in this demo application
 This demo application contains the following Blazor 0.6 features:
