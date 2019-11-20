@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>7.3</LangVersion>
+    <Authors>Marko Lohert</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Copyright>Copyright (c) 2019 Marko Lohert</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +15,13 @@
   <ItemGroup>
     <ProjectReference Include="..\Client\BlazorVacation.Client.csproj" />
     <ProjectReference Include="..\Shared\BlazorVacation.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

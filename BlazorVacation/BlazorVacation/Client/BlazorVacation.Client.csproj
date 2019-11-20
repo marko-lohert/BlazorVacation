@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
+    <Authors>Marko Lohert</Authors>
+    <Copyright>Copyright (c) 2019 Marko Lohert</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +16,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\BlazorVacation.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
