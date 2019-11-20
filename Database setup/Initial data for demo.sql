@@ -6,7 +6,7 @@
 -- was run, and prepare data that a presenter expects when a demo is run.   --
 --                                                                          --
 -- Run on (tested on):                                                      --     
--- Microsoft SQL Server                                                     --
+-- Microsoft SQL Server 2019                                                --
 ------------------------------------------------------------------------------
 
 ---------------------------------
@@ -39,22 +39,22 @@ VALUES ('Joe', 'Doe', 30);
 
 -- TABLE VACATION
 INSERT INTO VACATION (FROM_DATE, TILL_DATE, NOTE, DURATION, APPROVED, SETUP_OUT_OF_OFFICE_EMAIL)
-VALUES ('2019-1-02', '2019-1-04', 'Vacation 1', 3, 1, 1);
+VALUES ('2019-11-25', '2019-11-26', 'Vacation 1', 2, 1, 1);
 
 INSERT INTO VACATION (FROM_DATE, TILL_DATE, NOTE, DURATION, APPROVED, SETUP_OUT_OF_OFFICE_EMAIL)
-VALUES ('2019-4-23', '2019-4-26', 'Vacation 2', 4, 1, 0);
+VALUES ('2019-12-02', '2019-12-05', 'Vacation 2', 4, 1, 0);
 
 INSERT INTO VACATION (FROM_DATE, TILL_DATE, NOTE, DURATION, APPROVED, SETUP_OUT_OF_OFFICE_EMAIL)
-VALUES ('2019-5-2', '2019-5-3', 'Vacation 3', 2, 1, 1);
+VALUES ('2019-12-30', '2019-12-31', 'Vacation 3', 2, 1, 1);
 
 INSERT INTO VACATION (FROM_DATE, TILL_DATE, NOTE, DURATION, APPROVED, SETUP_OUT_OF_OFFICE_EMAIL)
 VALUES (CAST(SYSDATETIME() AS DATE), CAST(SYSDATETIME() AS DATE), 'Jane''s vacation', 1, 1, 1);
 
 INSERT INTO VACATION (FROM_DATE, TILL_DATE, NOTE, DURATION, APPROVED, SETUP_OUT_OF_OFFICE_EMAIL)
-VALUES ('2019-2-1', '2019-2-1', 'Free friday', 1, 1, 0);
+VALUES ('2019-12-22', '2019-12-22', 'Free friday', 1, 1, 0);
 
 INSERT INTO VACATION (FROM_DATE, TILL_DATE, NOTE, DURATION, APPROVED, SETUP_OUT_OF_OFFICE_EMAIL)
-VALUES ('2019-2-4', '2019-2-8', 'Joe''s vacation', 5, 1, 0);
+VALUES ('2019-11-25', '2019-11-29', 'Joe''s vacation', 5, 1, 0);
 
 
 -- TABLE EMPLOYEE_VACATION
