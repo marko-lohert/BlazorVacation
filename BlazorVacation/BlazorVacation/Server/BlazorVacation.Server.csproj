@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
+    <nullable>enable</nullable>
     <Authors>Marko Lohert</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Copyright>Copyright (c) 2019 Marko Lohert</Copyright>
@@ -22,6 +23,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
