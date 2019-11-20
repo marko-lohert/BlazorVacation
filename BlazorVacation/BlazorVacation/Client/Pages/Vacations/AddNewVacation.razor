@@ -8,20 +8,28 @@ Total assigned vacation days for @DateTime.Today.Year: @TotalAssignedVacationDay
 
 <br /><br />
 
-From:
-<input type="date" @bind="@NewVacation.FromDate" format-value="yyyy-MM-dd" />
-Till:
-<input type="date" @bind="@NewVacation.TillDate" format-value="yyyy-MM-dd" />
-Duration: @CalculateDuration() days
-<br /><br />
-Note:
-<input type="text" @bind="NewVacation.Note" />
-<br /><br />
-<input type="checkbox" @bind="NewVacation.SetUpOutOfOfficeEmail" /> Set up Out of Office email
+<EditForm Model="@NewVacation" OnValidSubmit="@SubmitRequest">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-<br /><br />
+    From:
+    <InputDate @bind-Value="@NewVacation.FromDate" format-value="yyyy-MM-dd" />
+    Till:
+    <InputDate @bind-Value="@NewVacation.TillDate" format-value="yyyy-MM-dd" />
+    Duration: @CalculateDuration() days
+    <br />
+    <br />
+    Note:
+    <InputText @bind-Value="NewVacation.Note" />
+    <br />
+    <br />
+    <InputCheckbox @bind-Value="NewVacation.SetUpOutOfOfficeEmail" /> Set up Out of Office email
 
-<button @onclick="SubmitRequest" class="btn btn-primary">Submit request</button>
+    <br />
+    <br />
+
+    <button type="submit" class="btn btn-primary">Submit request</button>
+</EditForm>
 
 <br /><br />
 
@@ -82,8 +90,8 @@ Note:
         if (NewVacation.TillDate < NewVacation.FromDate)
         {
             errorMessage = @"<div class=""alert alert-danger"">
-                                <strong>Till date</strong> must be equal or greater than <strong>from date</strong>.
-                             </div>";
+                            <strong>Till date</strong> must be equal or greater than <strong>from date</strong>.
+                         </div>";
 
             return (false, errorMessage);
         }
@@ -91,8 +99,8 @@ Note:
         if (NewVacation.TillDate >= NewVacation.FromDate && NewVacation.Duration == 0)
         {
             errorMessage = @"<div class=""alert alert-danger"">
-                                Vacation should last at least one day. <em>Weekends and holidays are not counted as vacation days</em>.
-                             </div>";
+                            Vacation should last at least one day. <em>Weekends and holidays are not counted as vacation days</em>.
+                         </div>";
 
             return (false, errorMessage);
         }
@@ -114,7 +122,7 @@ Note:
         await Http.SendJsonAsync(HttpMethod.Put, "api/Vacations/AddNewVacation", NewVacation);
 
         Message = @"<div class=""alert alert-success"">
-                        Vacation request submitted.
-                    </div>";
+                    Vacation request submitted.
+                </div>";
     }
 }
