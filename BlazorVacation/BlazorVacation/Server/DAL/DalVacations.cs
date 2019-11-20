@@ -21,34 +21,32 @@ namespace BlazorVacation.Server.Dal
 	                                   YEAR(VACATION.TILL_DATE) = {year});";
 
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using SqlConnection connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            SqlCommand sqlCommand = new SqlCommand(cmdText, connection);
+
+            SqlDataReader reader = sqlCommand.ExecuteReader();
+
+            while (reader.Read())
             {
-                connection.Open();
-                SqlCommand sqlCommand = new SqlCommand(cmdText, connection);
-
-                SqlDataReader reader = sqlCommand.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    listVacation.Add
-                    (
-                        new Vacation
-                        {
-                            FromDate = (DateTime)reader["FROM_DATE"],
-                            TillDate = (DateTime)reader["TILL_DATE"],
-                            Duration = (int)reader["DURATION"],
-                            Note = !reader.IsDBNull(3) ? reader["NOTE"] as string : null,
-                            Approved = (bool)reader["APPROVED"],
-                            SetUpOutOfOfficeEmail = !reader.IsDBNull(5) ? (bool)reader["SETUP_OUT_OF_OFFICE_EMAIL"] : false
-                        }
-                    );
-                }
-
-                reader.Close();
-                connection.Close();
-
-                return listVacation;
+                listVacation.Add
+                (
+                    new Vacation
+                    {
+                        FromDate = (DateTime)reader["FROM_DATE"],
+                        TillDate = (DateTime)reader["TILL_DATE"],
+                        Duration = (int)reader["DURATION"],
+                        Note = !reader.IsDBNull(3) ? reader["NOTE"] as string : null,
+                        Approved = (bool)reader["APPROVED"],
+                        SetUpOutOfOfficeEmail = !reader.IsDBNull(5) ? (bool)reader["SETUP_OUT_OF_OFFICE_EMAIL"] : false
+                    }
+                );
             }
+
+            reader.Close();
+            connection.Close();
+
+            return listVacation;
         }
    
         private (string FirstName, string LastName) CurrentUser = ("Marko", "Lohert");
