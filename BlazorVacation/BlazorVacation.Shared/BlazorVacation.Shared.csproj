@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <Authors>Marko Lohert (lohert.marko@gmail.com)</Authors>
+    <Copyright>Copyright (c) 2019 Marko Lohert &lt;lohert.marko@gmail.com&gt;</Copyright>
+  </PropertyGroup>
+
+</Project>
