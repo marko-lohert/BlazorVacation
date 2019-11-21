@@ -94,6 +94,63 @@ namespace BlazorVacation.Server.Dal
             connection.Close();
         }
 
+        public List<(Employee, Vacation)> GetVacationsCompanyNextDays(int range)
+        {
+            List<(Employee, Vacation)> listEmployeeVacation = new List<(Employee, Vacation)>();
+
+            string cmdText = $@"SELECT VACATION.FROM_DATE,
+                                       VACATION.TILL_DATE,
+                                       VACATION.DURATION,                                       
+                                       VACATION.NOTE,                                       
+                                       VACATION.APPROVED,                                       
+                                       VACATION.SETUP_OUT_OF_OFFICE_EMAIL,                                       
+                                       EMPLOYEE.*
+                                FROM VACATION
+                                INNER JOIN EMPLOYEE_VACATION ON EMPLOYEE_VACATION.VACATION_ID = VACATION.ID
+                                INNER JOIN EMPLOYEE ON EMPLOYEE.ID = EMPLOYEE_VACATION.EMPLOYEE_ID
+                                WHERE VACATION.FROM_DATE <= CAST(DATEADD(day, {range}, SYSDATETIME()) AS DATE)
+                                    AND VACATION.FROM_DATE >= CAST(SYSDATETIME() AS DATE)
+                                ORDER BY VACATION.FROM_DATE;";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand(cmdText, connection);
+
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    listEmployeeVacation.Add
+                    (
+                        (
+                            new Employee
+                            {
+                                FirstName = reader["FIRST_NAME"] as string,
+                                LastName = reader["LAST_NAME"] as string,
+                                TotalAssignedVacationDays = (int)reader["TOTAL_ASSIGNED_VACATION_DAYS"]
+                            }
+                            ,
+                            new Vacation
+                            {
+                                FromDate = (DateTime)reader[0],
+                                TillDate = (DateTime)reader[1],
+                                Duration = (int)reader[2],
+                                Note = !reader.IsDBNull(3) ? reader[3] as string : null,
+                                Approved = (bool)reader[4],
+                                SetUpOutOfOfficeEmail = !reader.IsDBNull(5) ? (bool)reader[5] : false
+                            }
+                        )
+                    );
+                }
+
+                reader.Close();
+                connection.Close();
+
+                return listEmployeeVacation;
+            }
+        }
+
         private (string FirstName, string LastName) CurrentUser = ("Marko", "Lohert");
 
         private string ConnectionString = "Data Source = .;Initial Catalog = BlazorVacation;Integrated Security=true";
