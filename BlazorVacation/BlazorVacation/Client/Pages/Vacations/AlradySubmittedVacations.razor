@@ -4,31 +4,24 @@
 
 @if (@Vacations != null && @Vacations.Count > 0)
 {
-    <table class="table table-striped">
-        <thead class="thead thead-light">
-            <tr>
-                <th>From</th>
-                <th>To</th>
-                <th>Duration</th>
-                <th>Note</th>
-                <th>Approved</th>
-                <th>Set up out of office email</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (Vacation vacation in @Vacations)
-            {
-            <tr>
-                <td>@vacation.FromDate.ToString("dd.MM.yyyy")</td>
-                <td>@vacation.TillDate.ToString("dd.MM.yyyy")</td>
-                <td>@vacation.Duration</td>
-                <td>@vacation.Note</td>
-                <td>@vacation.Approved</td>
-                <td>@vacation.SetUpOutOfOfficeEmail</td>
-            </tr>
-            }
-        </tbody>
-    </table>
+    <TemplatedTableBlazorVacation Items="Vacations">
+        <TableHeader>
+            <th>From</th>
+            <th>To</th>
+            <th>Duration</th>
+            <th>Note</th>
+            <th>Approved</th>
+            <th>SetUpOutOfOfficeEmail</th>
+        </TableHeader>
+        <RowTemplate>
+            <td>@context.FromDate.ToString("dd.MM.yyyy")</td>
+            <td>@context.TillDate.ToString("dd.MM.yyyy")</td>
+            <td>@context.Duration</td>
+            <td>@context.Note</td>
+            <td>@context.Approved</td>
+            <td>@context.SetUpOutOfOfficeEmail</td>
+        </RowTemplate>
+    </TemplatedTableBlazorVacation>
 }
 
 

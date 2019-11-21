@@ -6,31 +6,26 @@
 
 @if (@EmployeesVacations != null && @EmployeesVacations.Count > 0)
 {
-    <table class="table table-striped">
-        <thead class="thead thead-light">
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>From</th>
-                <th>Till</th>
-            </tr>
-        </thead>
-        @foreach (var item in EmployeesVacations)
-        {
-        <tr>
-            <td>@item.employee?.FirstName</td>
-            <td>@item.employee?.LastName</td>
-            <td>@item.vacation?.FromDate.ToString("dd.MM.yyyy")</td>
-            <td>@item.vacation?.TillDate.ToString("dd.MM.yyyy")</td>
-        </tr>
-        }
-    </table>
+    <TemplatedTableBlazorVacation Items="@EmployeesVacations">
+        <TableHeader>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>From</th>
+            <th>Till</th>
+        </TableHeader>
+        <RowTemplate>
+            <td>@context.employee?.FirstName</td>
+            <td>@context.employee?.LastName</td>
+            <td>@context.vacation?.FromDate.ToString("dd.MM.yyyy")</td>
+            <td>@context.vacation?.TillDate.ToString("dd.MM.yyyy")</td>
+        </RowTemplate>
+    </TemplatedTableBlazorVacation>
 }
 
 
 @code
 {
-    public List<(Employee employee, Vacation vacation)>? EmployeesVacations { get; set; }
+    List<(Employee employee, Vacation vacation)>? EmployeesVacations { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

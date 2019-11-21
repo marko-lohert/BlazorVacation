@@ -5,9 +5,9 @@
 
 <h4 class="text-primary">Public holidays in @Year</h4>
 
-Select year: 
+Select year:
 <select @bind="SelectedYear" @onclick="(() => { if (SelectedYear != Year) { Year = SelectedYear; ChangeYear(); } })">
-@foreach (var year in ListYears)
+    @foreach (var year in ListYears)
 {
     <option value="@year">@year</option>
 }
@@ -17,25 +17,20 @@ Select year:
 
 @if (@Holidays != null && Holidays.Count > 0)
 {
-    <table class="table table-striped">
-        <thead class="thead thead-light">
-            <tr>
-                <th>From</th>
-                <th>Till</th>
-                <th>Day</th>
-                <th>Name</th>
-            </tr>
-        </thead>
-        @foreach (Holiday holiday in Holidays)
-        {
-        <tr style=@(holiday.FromDate.DayOfWeek==DayOfWeek.Saturday || holiday.FromDate.DayOfWeek==DayOfWeek.Sunday ? "color:red" : "color:green")>
-            <td>@holiday.FromDate.ToString("dd.MM.yyyy")</td>
-            <td>@holiday.TillDate.ToString("dd.MM.yyyy")</td>
-            <td>@holiday.FromDate.DayOfWeek.ToString()</td>
-            <td>@holiday.Name</td>
-        </tr>
-        }
-    </table>
+    <TemplatedTableBlazorVacation Items="@Holidays">
+        <TableHeader>
+            <th>From</th>
+            <th>Till</th>
+            <th>Day</th>
+            <th>Name</th>
+        </TableHeader>
+        <RowTemplate>
+            <td style=@(context.FromDate.DayOfWeek==DayOfWeek.Saturday || context.FromDate.DayOfWeek==DayOfWeek.Sunday ? "color:red" : "color:green")>@context.FromDate.ToString("dd.MM.yyyy")</td>
+            <td style=@(context.FromDate.DayOfWeek==DayOfWeek.Saturday || context.FromDate.DayOfWeek==DayOfWeek.Sunday ? "color:red" : "color:green")>@context.TillDate.ToString("dd.MM.yyyy")</td>
+            <td style=@(context.FromDate.DayOfWeek==DayOfWeek.Saturday || context.FromDate.DayOfWeek==DayOfWeek.Sunday ? "color:red" : "color:green")>@context.FromDate.DayOfWeek.ToString()</td>
+            <td style=@(context.FromDate.DayOfWeek==DayOfWeek.Saturday || context.FromDate.DayOfWeek==DayOfWeek.Sunday ? "color:red" : "color:green")>@context.Name</td>
+        </RowTemplate>
+    </TemplatedTableBlazorVacation>
 }
 
 @code
@@ -51,9 +46,9 @@ Select year:
     {
         if (string.IsNullOrEmpty(Year))
             Year = DateTime.Now.Year.ToString();
-        
+
         Holidays = await Http.GetJsonAsync<List<Holiday>>($"api/Holidays/GetHolidays?year={Year}");
-        
+
         SelectedYear = Year;
     }
 
