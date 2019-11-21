@@ -21,14 +21,3 @@
         </RowTemplate>
     </TemplatedTableBlazorVacation>
 }
-
-
-@code
-{
-    List<(Employee employee, Vacation vacation)>? EmployeesVacations { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        EmployeesVacations = await Http.GetJsonAsync<List<(Employee, Vacation)>>($"api/Vacations/WhoIsOnVacation?range=7");
-    }
-}
