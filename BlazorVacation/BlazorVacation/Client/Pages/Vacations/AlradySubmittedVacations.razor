@@ -1,0 +1,25 @@
+﻿@inject HttpClient Http
+
+<h4 class="text-primary">Already Submitted Vacations</h4>
+
+@if (@Vacations != null && @Vacations.Count > 0)
+{
+    <TemplatedTableBlazorVacation Items="Vacations">
+        <TableHeader>
+            <th>From</th>
+            <th>To</th>
+            <th>Duration</th>
+            <th>Note</th>
+            <th>Approved</th>
+            <th>SetUpOutOfOfficeEmail</th>
+        </TableHeader>
+        <RowTemplate>
+            <td>@context.FromDate.ToString("dd.MM.yyyy")</td>
+            <td>@context.TillDate.ToString("dd.MM.yyyy")</td>
+            <td>@context.Duration</td>
+            <td>@context.Note</td>
+            <td>@context.Approved</td>
+            <td>@context.SetUpOutOfOfficeEmail</td>
+        </RowTemplate>
+    </TemplatedTableBlazorVacation>
+}

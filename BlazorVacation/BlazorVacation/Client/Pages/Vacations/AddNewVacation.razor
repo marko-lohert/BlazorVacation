@@ -1,0 +1,40 @@
+﻿@using System.Linq;
+
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+
+<h4 class="text-primary">Add New Vacation</h4>
+
+Total assigned vacation days for @DateTime.Today.Year: @TotalAssignedVacationDays days
+
+<br /><br />
+
+<EditForm Model="@NewVacation" OnValidSubmit="@SubmitRequest">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    From:
+    <InputDate @bind-Value="@NewVacation.FromDate" format-value="yyyy-MM-dd" />
+    Till:
+    <InputDate @bind-Value="@NewVacation.TillDate" format-value="yyyy-MM-dd" />
+    Duration: @CalculateDuration() days
+    <br />
+    <br />
+    Note:
+    <InputText @bind-Value="NewVacation.Note" />
+    <br />
+    <br />
+    <InputCheckbox @bind-Value="NewVacation.SetUpOutOfOfficeEmail" /> Set up Out of Office email
+
+    <br />
+    <br />
+
+    <button type="submit" class="btn btn-primary">Submit request</button>
+</EditForm>
+
+<br /><br />
+
+@if (!string.IsNullOrWhiteSpace(@Message))
+{
+    @((MarkupString)Message);
+}

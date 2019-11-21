@@ -1,0 +1,34 @@
+﻿@page "/Reports/PublicHolidays"
+@page "/Reports/PublicHolidays/{Year}"
+
+@inject HttpClient Http
+
+<h4 class="text-primary">Public holidays in @Year</h4>
+
+Select year:
+<select @bind="SelectedYear" @onclick="(() => { if (SelectedYear != Year) { Year = SelectedYear; ChangeYear(); } })">
+    @foreach (var year in ListYears)
+{
+    <option value="@year">@year</option>
+}
+</select>
+
+<br /><br />
+
+@if (@Holidays != null && Holidays.Count > 0)
+{
+    <TemplatedTableBlazorVacation Items="@Holidays">
+        <TableHeader>
+            <th>From</th>
+            <th>Till</th>
+            <th>Day</th>
+            <th>Name</th>
+        </TableHeader>
+        <RowTemplate>
+            <td style=@(context.FromDate.DayOfWeek==DayOfWeek.Saturday || context.FromDate.DayOfWeek==DayOfWeek.Sunday ? "color:red" : "color:green")>@context.FromDate.ToString("dd.MM.yyyy")</td>
+            <td style=@(context.FromDate.DayOfWeek==DayOfWeek.Saturday || context.FromDate.DayOfWeek==DayOfWeek.Sunday ? "color:red" : "color:green")>@context.TillDate.ToString("dd.MM.yyyy")</td>
+            <td style=@(context.FromDate.DayOfWeek==DayOfWeek.Saturday || context.FromDate.DayOfWeek==DayOfWeek.Sunday ? "color:red" : "color:green")>@context.FromDate.DayOfWeek.ToString()</td>
+            <td style=@(context.FromDate.DayOfWeek==DayOfWeek.Saturday || context.FromDate.DayOfWeek==DayOfWeek.Sunday ? "color:red" : "color:green")>@context.Name</td>
+        </RowTemplate>
+    </TemplatedTableBlazorVacation>
+}
